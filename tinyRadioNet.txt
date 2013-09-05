@@ -1,0 +1,51 @@
+tinyRadioNetwork
+----------------
+
+It's a project of draft to define a node routing protocol for little 
+wireless network (with radio chip like nRF24L01).
+
+Every frame must be tiny 8 bytes max wide (for improve reliability). Network 
+physical layer support broadcast (to radio neighborhood) and unicast transport.
+
+Every node have an unique address on 1 byte first 4 bits are "net address", 
+other 4 bits are "node id".
+
+Nodes
+-----
+
+Network containt 2 type of node :
+- Gateway (with node id = 0).
+- Satellite (whith node id between 1 and 15).
+
+Sample : 
+* address 0x60, net is 0x6 and node is 0x0: it's the gateway for net id 0x6.
+* address Ox46, net is 0x4 and node is 0x6: it's the Ox6 satellite in net id 0x4.
+
+Note :
+- Net ID 0 is reserved for future use.
+
+Routing table
+-------------
+
+Every Gateway have a routing table in memory :
+
+This table containt a metric for every net ID and the next hop to use in 
+neighborhood
+
+Example :
+net ID / metric / next hop
+   1       1        0x50
+   2       3        0x50
+
+Frame dictionary
+----------------
+   
+Hello frame (send by every node at regular interval) :
+                                      <-                         6 bytes (6 nodes)                                ->
+<--- 1 byte ---> | <--- 1 byte ---> | <-4 bits-><-4 bits-> | <- ... -> | <-4 bits-><-4 bits-> | <-4 bits-><-4 bits-> | 
+  frame type (0)  who am i (node ID)    net id    metric        ...        net id    metric       net id    metric
+
+Frame for transmit 32 bits vars :
+
+<--- 1 byte ---> | <--- 1 byte ---> | <--- 1 byte ---> | <-4 bits-><-4 bits-> | <-- 4 bytes --> |
+  frame type (1)      to node ID        from node ID         ttl     var ID        32 bit var
