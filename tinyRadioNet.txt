@@ -2,7 +2,8 @@ tinyRadioNetwork
 ----------------
 
 It's a project of draft to define a node routing protocol for little 
-wireless network (with radio chip like nRF24L01).
+wireless network with radio chip like nRF24L01. On a first time, the
+goal of the library is to use RF24 API to access to physical layer.
 
 Every frame must be tiny 8 bytes max wide (for improve reliability). Network 
 physical layer support broadcast (to radio neighborhood) and unicast transport.
@@ -33,9 +34,11 @@ This table containt a metric for every net ID and the next hop to use in
 neighborhood
 
 Example :
-net ID / metric / next hop
-   1       1        0x50
-   2       3        0x50
+net ID / metric / next net hop / age
+   1       1           5          10
+   2       3           5         123
+   
+If "age" is too old (threshold to define), the line is drop from the table.
 
 Frame dictionary
 ----------------
